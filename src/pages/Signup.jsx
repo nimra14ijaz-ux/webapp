@@ -1,10 +1,44 @@
 import { Link, useNavigate } from "react-router-dom";
 import bgImage from "../assets/bg.jpg"
+import { supabase } from "../Supabase";
+import React, { useState } from "react";
+
 
 
 const Signup = () => {
 
     const navigate = useNavigate();
+    const [name, setName] = useState("nimra");
+    const [email, setEmail] = useState("nimra@gmail.com");
+    const [password, setPassword] = useState("password");
+    const [cpassword, setcPassword] = useState("password");
+
+    const signUp = async () => {
+        if(password !== cpassword){
+        console.log("password are not match");
+        return;
+        }
+        const { data, error } = await supabase.auth.signUp({
+        email : email,
+        password : password,
+
+        options: {
+            data: {
+            full_name : name,
+            },
+        },
+        });
+
+
+        if(error){
+        console.log("signUp message :", error.message);
+        return;
+        }
+
+        console.log("signUp successfull: ",  data);
+
+        navigation.navigate("AdminHome");
+    }
 
     return (
        
@@ -36,22 +70,24 @@ const Signup = () => {
              <h3 className="text-center mb-4">Sign Up</h3>
                 <div className="mt-2">
                     <label className="form-label">Full Name:</label>
-                    <input className="form-control" type="text" />
+                    <input className="form-control" type="text" value={name} onChange={(e) => setName(e.target.value)}/>
                 </div>
 
                 <div className="mt-2">
                     <label className="form-label">Email:</label>
-                    <input className="form-control" type="email" />
+                    <input className="form-control" type="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
                 </div>
 
                 <div className="mt-2">
                     <label className="form-label">Password:</label>
-                    <input className="form-control" type="password" />
+                    <input className="form-control" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 <div className="mt-2">
                     <label className="form-label">Confirm Password:</label>
-                    <input className="form-control" type="password" />
+                    <input className="form-control" type="password" value={cpassword} onChange={(e) => setcPassword(e.target.value)}/>
                 </div>
+
+                <button onClick={signUp}>Create Account</button>
 
                 
 
